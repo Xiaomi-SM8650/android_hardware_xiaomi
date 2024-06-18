@@ -1,0 +1,17 @@
+//
+// Copyright (C) 2024 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+aidl_interface {
+    name: "vendor.xiaomi.hardware.mlipay",
+    vendor_available: true,
+    srcs: ["vendor/xiaomi/hardware/mlipay/*.aidl"],
+    backend: {
+        java: {
+            sdk_version: "system_current",
+        },
+    },
+    owner: "xiaomi",
+}
