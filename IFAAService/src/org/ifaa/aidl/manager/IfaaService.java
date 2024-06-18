@@ -1,30 +1,22 @@
 /*
- * Copyright (C) 2022 The LineageOS Project
+ * Copyright (C) 2024 The LineageOS Project
  *
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.ifaa.aidl.manager;
 
-import android.app.KeyguardManager;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.fingerprint.Fingerprint;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.util.Log;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import org.ifaa.aidl.manager.IfaaManagerService;
 import org.json.JSONObject;
-import org.json.JSONException;
-import vendor.xiaomi.hardware.mlipay.V1_1.IMlipayService;
+import vendor.xiaomi.hardware.mlipay.IMlipayService;
 
 public class IfaaService extends Service {
     private static final String LOG_TAG = IfaaService.class.getSimpleName();
@@ -37,7 +29,13 @@ public class IfaaService extends Service {
     private static final int ACTIVITY_START_SUCCESS = 0;
     private static final int ACTIVITY_START_FAILED = -1;
 
+    private static final int IFAA_VERSION = 4;
+    private static final String IFAASERVICE_AIDL_INTERFACE = "vendor.xiaomi.hardware.mlipay.IMlipayService/default";
+
     private static boolean sIsFod = SystemProperties.getBoolean("ro.hardware.fp.fod", false);
+
+    private static final String mFingerActName = "com.android.settings.NewFingerprintActivity";
+    private static final String mFingerPackName = "com.android.settings";
 
     private IMlipayService mMlipayService = null;
 
@@ -69,8 +67,9 @@ public class IfaaService extends Service {
             int res = ACTIVITY_START_FAILED;
 
             if (authType == AUTH_TYPE_FINGERPRINT) {
-                Intent intent = new Intent("android.settings.SECURITY_SETTINGS");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent();
+                intent.setClassName(mFingerPackName, mFingerActName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
                 res = ACTIVITY_START_SUCCESS;
             }
@@ -85,37 +84,27 @@ public class IfaaService extends Service {
 
         @Override
         public byte[] processCmd(byte[] param) {
-            IMlipayService mlipayService = getMlipayService();
-            if (mlipayService == null) {
-                Log.e(LOG_TAG, "Failed to open mlipay HAL");
+            try {
+                if (getMlipayService() != null) {
+                    byte[] receiveBufferByteArray = mMlipayService.invoke_command(param, param.length);
+                    int length = receiveBufferByteArray.length;
+                    byte[] receiveBuffer = new byte[length];
+                    for (int i = 0; i < length; i++) {
+                        receiveBuffer[i] = receiveBufferByteArray[i];
+                    }
+                    return receiveBuffer;
+                }
+                Log.e(LOG_TAG, "[processCmd] IMlipayService not found");
+                return null;
+            } catch (RemoteException e) {
+                Log.e(LOG_TAG, "[processCmd] transact fail: " + e);
                 return null;
             }
-
-            ArrayList<Byte> paramByteArray = new ArrayList<Byte>();
-            for (byte b : param) {
-                paramByteArray.add(Byte.valueOf(b));
-            }
-
-            byte[] receiveBuffer = null;
-
-            try {
-                ArrayList<Byte> receiveBufferByteArray = mlipayService.invoke_command(paramByteArray,
-                        paramByteArray.size());
-
-                receiveBuffer = new byte[receiveBufferByteArray.size()];
-                for (int i = 0; i < receiveBufferByteArray.size(); i++) {
-                    receiveBuffer[i] = receiveBufferByteArray.get(i).byteValue();
-                }
-            } catch (RemoteException e) {
-                Log.e(LOG_TAG, "processCmdImpl: mlipay invoke_command failed", e);
-            }
-
-            return receiveBuffer;
         }
 
         @Override
         public int getVersion() {
-            return 4;
+            return IFAA_VERSION;
         }
 
         @Override
@@ -135,25 +124,22 @@ public class IfaaService extends Service {
 
         @Override
         public int[] getIDList(int bioType) {
-            int[] idList = new int[0];
-
-            IMlipayService mlipayService = getMlipayService();
-            if (mlipayService == null) {
-                Log.e(LOG_TAG, "getIDListImpl: Failed to open mlipay HAL");
-                return idList;
-            }
-
             try {
-                ArrayList<Integer> idListAL = mlipayService.ifaa_get_idlist(bioType);
-                idList = new int[idListAL.size()];
-                for (int i = 0; i < idListAL.size(); i++) {
-                    idList[i] = idListAL.get(i).intValue();
+                if (getMlipayService() != null) {
+                    int[] ifaa_get_idlist = mMlipayService.ifaa_get_idlist(bioType);
+                    int length = ifaa_get_idlist.length;
+                    int[] idList = new int[length];
+                    for (int i = 0; i < length; i++) {
+                        idList[i] = ifaa_get_idlist[i];
+                    }
+                    return idList;
                 }
+                Log.e(LOG_TAG, "[getIDList] IMlipayService not found");
+                return null;
             } catch (RemoteException e) {
-                Log.e(LOG_TAG, "getIDListImpl: mlipay ifaa_get_idlist failed", e);
+                Log.e(LOG_TAG, "[getIDList] transact fail " + e);
+                return null;
             }
-
-            return idList;
         }
     };
 
@@ -163,16 +149,17 @@ public class IfaaService extends Service {
     }
 
     // Utils
-
-    private IMlipayService getMlipayService() {
+    private IMlipayService getMlipayService() throws RemoteException {
         if (mMlipayService == null) {
-            try {
-                mMlipayService = IMlipayService.getService();
-            } catch (RemoteException e) {
-                // do nothing
+            IBinder service = ServiceManager.getService(IFAASERVICE_AIDL_INTERFACE);
+            IMlipayService asInterface = IMlipayService.Stub.asInterface(service);
+            mMlipayService = asInterface;
+            if (asInterface == null) {
+                Log.e(LOG_TAG, "Getting IMlipayService AIDL daemon interface failed!");
+            } else {
+                Log.d(LOG_TAG, "IMlipayService AIDL daemon interface is binded!");
             }
         }
-
         return mMlipayService;
     }
 
