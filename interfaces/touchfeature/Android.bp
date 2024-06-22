@@ -1,0 +1,17 @@
+//
+// Copyright (C) 2024 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+aidl_interface {
+    name: "vendor.xiaomi.hw.touchfeature",
+    vendor_available: true,
+    srcs: ["vendor/xiaomi/hw/touchfeature/*.aidl"],
+    backend: {
+        ndk: {
+            enabled: true,
+        },
+    },
+    owner: "xiaomi",
+}
