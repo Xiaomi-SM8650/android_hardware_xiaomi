@@ -14,8 +14,8 @@
 #include <hardware/hardware.h>
 #include <log/log.h>
 
-#include <vendor/xiaomi/hw/touchfeature/ITouchFeature.h>
-#include <vendor/xiaomi/hardware/fingerprintextension/IXiaomiFingerprint.h>
+#include <aidl/vendor/xiaomi/hw/touchfeature/ITouchFeature.h>
+#include <aidl/vendor/xiaomi/hardware/fingerprintextension/IXiaomiFingerprint.h>
 
 #include "LockoutTracker.h"
 #include "UdfpsHandler.h"
@@ -25,8 +25,8 @@ using ::aidl::android::hardware::biometrics::common::OperationContext;
 using ::aidl::android::hardware::biometrics::fingerprint::PointerContext;
 using ::aidl::android::hardware::keymaster::HardwareAuthToken;
 
-using ::vendor::xiaomi::hw::touchfeature::ITouchFeature;
-using ::vendor::xiaomi::hardware::fingerprintextension::IXiaomiFingerprint;
+using ::aidl::vendor::xiaomi::hw::touchfeature::ITouchFeature;
+using ::aidl::vendor::xiaomi::hardware::fingerprintextension::IXiaomiFingerprint;
 
 namespace aidl {
 namespace android {
@@ -110,8 +110,8 @@ private:
     UdfpsHandlerFactory* mUdfpsHandlerFactory;
     UdfpsHandler* mUdfpsHandler;
 
-    android::sp<IXiaomiFingerprint> mExtension;
-    android::sp<ITouchFeature> mTouchFeature;
+    std::shared_ptr<IXiaomiFingerprint> mExtension;
+    std::shared_ptr<ITouchFeature> mTouchFeature;
 
     void setFODPressEnabled(bool pressed);
 };

@@ -11,6 +11,11 @@
 
 #include "CancellationSignal.h"
 
+#define CMD_FOD_LHBM_STATUS 4
+#define CMD_TOUCH_FOD_ENABLE 1001
+#define LOCAL_HBM_NORMAL_WHITE_1000NIT 1
+#define LOCAL_HBM_OFF_TO_NORMAL 0
+
 namespace aidl {
 namespace android {
 namespace hardware {
@@ -408,10 +413,10 @@ void Session::notify(const fingerprint_msg_t* msg) {
 
 void Session::setFODPressEnabled(bool enabled) {
     if (enabled) {
-        mExtension->extCmd(CMD_FOD_LHBM_STATUS, LOCAL_HBM_NORMAL_WHITE_1000NIT);
+        mExtension->extCmd(CMD_FOD_LHBM_STATUS, LOCAL_HBM_NORMAL_WHITE_1000NIT, 0);
     } else {
-        mExtension->extCmd(CMD_FOD_LHBM_STATUS, LOCAL_HBM_OFF_TO_NORMAL);
-        mTouchFeature->setTouchMode(0, CMD_TOUCH_FOD_ENABLE, 0);
+        mExtension->extCmd(CMD_FOD_LHBM_STATUS, LOCAL_HBM_OFF_TO_NORMAL, 0);
+        mTouchFeature->setModeValue(0, CMD_TOUCH_FOD_ENABLE, 0, 0);
     }
 }
 

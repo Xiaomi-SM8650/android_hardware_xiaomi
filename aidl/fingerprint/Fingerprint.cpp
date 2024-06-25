@@ -9,9 +9,6 @@
 #include <android-base/logging.h>
 #include <cutils/properties.h>
 
-#define CMD_FOD_LHBM_STATUS 4
-#define CMD_TOUCH_FOD_ENABLE 1001
-
 namespace {
 
 typedef struct fingerprint_hal {
@@ -55,7 +52,7 @@ Fingerprint::Fingerprint()
       mSupportsGestures(false),
       mDevice(nullptr),
       mUdfpsHandlerFactory(nullptr),
-      mUdfpsHandler(nullptr)
+      mUdfpsHandler(nullptr),
       mExtension(nullptr),
       mTouchFeature(nullptr) {
     sInstance = this;  // keep track of the most recent instance
@@ -90,7 +87,7 @@ Fingerprint::Fingerprint()
         }
     }
 
-    mExtension = IXiaomiFingerprint::getService();
+    mExtension = IXiaomiFingerprint::getDefaultImpl();
         if (mExtension == nullptr) {
             ALOGE("Fingerprint extension not available");
             return;
@@ -98,7 +95,7 @@ Fingerprint::Fingerprint()
             ALOGI("Successfully bound fingerprint extension");
     }
 
-    mTouchFeature = ITouchFeature::getService();
+    mTouchFeature = ITouchFeature::getDefaultImpl();
         if (mTouchFeature == nullptr) {
             ALOGE("TouchFeature not available");
             return;
