@@ -42,10 +42,6 @@ private:
     FingerprintSensorType mSensorType;
     int mMaxEnrollmentsPerUser;
     bool mSupportsGestures;
-
-    fingerprint_device_t* mDevice;
-    UdfpsHandlerFactory* mUdfpsHandlerFactory;
-    UdfpsHandler* mUdfpsHandler;
 };
 
 } // namespace fingerprint

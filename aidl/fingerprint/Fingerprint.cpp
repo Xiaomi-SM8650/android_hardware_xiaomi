@@ -9,6 +9,9 @@
 #include <android-base/logging.h>
 #include <cutils/properties.h>
 
+#define CMD_FOD_LHBM_STATUS 4
+#define CMD_TOUCH_FOD_ENABLE 1001
+
 namespace {
 
 typedef struct fingerprint_hal {
@@ -52,7 +55,9 @@ Fingerprint::Fingerprint()
       mSupportsGestures(false),
       mDevice(nullptr),
       mUdfpsHandlerFactory(nullptr),
-      mUdfpsHandler(nullptr) {
+      mUdfpsHandler(nullptr)
+      mExtension(nullptr),
+      mTouchFeature(nullptr) {
     sInstance = this;  // keep track of the most recent instance
     for (auto& [id_name, class_name, sensor_type] : kModules) {
         mDevice = openHal(id_name, class_name);
@@ -83,6 +88,22 @@ Fingerprint::Fingerprint()
                 mUdfpsHandler->init(mDevice);
             }
         }
+    }
+
+    mExtension = IXiaomiFingerprint::getService();
+        if (mExtension == nullptr) {
+            ALOGE("Fingerprint extension not available");
+            return;
+        } else {
+            ALOGI("Successfully bound fingerprint extension");
+    }
+
+    mTouchFeature = ITouchFeature::getService();
+        if (mTouchFeature == nullptr) {
+            ALOGE("TouchFeature not available");
+            return;
+        } else {
+            ALOGI("Successfully bound TouchFeature");
     }
 }
 
@@ -202,6 +223,7 @@ ndk::ScopedAStatus Fingerprint::createSession(int32_t /*sensorId*/, int32_t user
 
     return ndk::ScopedAStatus::ok();
 }
+
 
 } // namespace fingerprint
 } // namespace biometrics

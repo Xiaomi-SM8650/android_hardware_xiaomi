@@ -14,6 +14,9 @@
 #include <hardware/hardware.h>
 #include <log/log.h>
 
+#include <vendor/xiaomi/hw/touchfeature/ITouchFeature.h>
+#include <vendor/xiaomi/hardware/fingerprintextension/IXiaomiFingerprint.h>
+
 #include "LockoutTracker.h"
 #include "UdfpsHandler.h"
 
@@ -21,6 +24,9 @@ using ::aidl::android::hardware::biometrics::common::ICancellationSignal;
 using ::aidl::android::hardware::biometrics::common::OperationContext;
 using ::aidl::android::hardware::biometrics::fingerprint::PointerContext;
 using ::aidl::android::hardware::keymaster::HardwareAuthToken;
+
+using ::vendor::xiaomi::hw::touchfeature::ITouchFeature;
+using ::vendor::xiaomi::hardware::fingerprintextension::IXiaomiFingerprint;
 
 namespace aidl {
 namespace android {
@@ -101,7 +107,13 @@ private:
     // Binder death handler.
     AIBinder_DeathRecipient* mDeathRecipient;
 
+    UdfpsHandlerFactory* mUdfpsHandlerFactory;
     UdfpsHandler* mUdfpsHandler;
+
+    android::sp<IXiaomiFingerprint> mExtension;
+    android::sp<ITouchFeature> mTouchFeature;
+
+    void setFODPressEnabled(bool pressed);
 };
 
 } // namespace fingerprint
