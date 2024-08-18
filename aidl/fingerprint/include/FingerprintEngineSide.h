@@ -6,21 +6,21 @@
  */
 
 #pragma once
-#include "FakeFingerprintEngine.h"
+#include "FingerprintEngine.h"
 
 using namespace ::aidl::android::hardware::biometrics::common;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 
-// A fake engine that is backed by system properties instead of hardware.
-class FakeFingerprintEngineSide : public FakeFingerprintEngine {
+// An engine that is backed by system properties instead of hardware.
+class FingerprintEngineSide : public FingerprintEngine {
   public:
     static constexpr int32_t defaultSensorLocationX = 0;
     static constexpr int32_t defaultSensorLocationY = 600;
     static constexpr int32_t defaultSensorRadius = 150;
 
-    FakeFingerprintEngineSide();
-    ~FakeFingerprintEngineSide() {}
+    FingerprintEngineSide();
+    ~FingerprintEngineSide() {}
 
     virtual SensorLocation defaultSensorLocation() override;
 };

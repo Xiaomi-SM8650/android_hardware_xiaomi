@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "FakeFingerprintEngineSide.h"
+#include "FingerprintEngineSide.h"
 
 #include <android-base/logging.h>
 
@@ -18,9 +18,9 @@ using namespace ::android::fingerprint::xiaomi;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 
-FakeFingerprintEngineSide::FakeFingerprintEngineSide() : FakeFingerprintEngine() {}
+FingerprintEngineSide::FingerprintEngineSide() : FingerprintEngine() {}
 
-SensorLocation FakeFingerprintEngineSide::defaultSensorLocation() {
+SensorLocation FingerprintEngineSide::defaultSensorLocation() {
     return SensorLocation{.sensorLocationX = defaultSensorLocationX,
                           .sensorLocationY = defaultSensorLocationY,
                           .sensorRadius = defaultSensorRadius};

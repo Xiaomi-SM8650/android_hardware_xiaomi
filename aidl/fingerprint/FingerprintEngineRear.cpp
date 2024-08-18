@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "FakeFingerprintEngineRear.h"
+#include "FingerprintEngineRear.h"
 
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
