@@ -15,7 +15,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 
-using namespace ::android::fingerprint::virt;
+using namespace ::android::fingerprint::xiaomi;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 namespace {
@@ -108,7 +108,7 @@ binder_status_t Fingerprint::dump(int fd, const char** /*args*/, uint32_t numArg
         LOG(INFO) << __func__ << " fd:" << fd << "numArgs:" << numArgs;
     }
 
-    dprintf(fd, "----- FingerprintVirtualHal::dump -----\n");
+    dprintf(fd, "----- FingerprintAidlHal::dump -----\n");
     std::vector<SensorProps> sps(1);
     getSensorProps(&sps);
     for (auto& sp : sps) {
@@ -146,7 +146,7 @@ binder_status_t Fingerprint::handleShellCommand(int in, int out, int err, const 
 }
 
 void Fingerprint::onHelp(int fd) {
-    dprintf(fd, "Virtual HAL commands:\n");
+    dprintf(fd, "Aidl HAL commands:\n");
     dprintf(fd, "         help: print this help\n");
     dprintf(fd, "  resetconfig: reset all configuration to default\n");
     dprintf(fd, "\n");
@@ -154,7 +154,7 @@ void Fingerprint::onHelp(int fd) {
 }
 
 void Fingerprint::resetConfigToDefault() {
-    LOG(INFO) << __func__ << ": reset virtual HAL configuration to default";
+    LOG(INFO) << __func__ << ": reset Aidl HAL configuration to default";
     Fingerprint::cfg().init();
 #ifdef FPS_DEBUGGABLE
     clearConfigSysprop();

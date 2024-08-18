@@ -47,7 +47,7 @@ sysprop_library {
 }
 
 apex {
-    name: "com.android.hardware.biometrics.fingerprint.virtual",
+    name: "com.android.hardware.biometrics.fingerprint.xiaomi",
     manifest: "apex_manifest.json",
     file_contexts: "apex_file_contexts",
     key: "com.android.hardware.key",

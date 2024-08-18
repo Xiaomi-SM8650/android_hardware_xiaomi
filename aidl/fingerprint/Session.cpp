@@ -12,7 +12,7 @@
 #include "util/CancellationSignal.h"
 
 #undef LOG_TAG
-#define LOG_TAG "FingerprintVirtualHalSession"
+#define LOG_TAG "FingerprintAidlHalSession"
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 

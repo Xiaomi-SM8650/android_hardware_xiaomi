@@ -7,7 +7,7 @@
 
 #pragma once
 
-#define LOG_TAG "FingerprintVirtualHal"
+#define LOG_TAG "FingerprintAidlHal"
 
 #include <aidl/android/hardware/biometrics/common/SensorStrength.h>
 #include <aidl/android/hardware/biometrics/fingerprint/ISessionCallback.h>
