@@ -51,19 +51,6 @@ sysprop_library {
     vendor: true,
 }
 
-prebuilt_etc {
-    name: "fingerprint-example.rc",
-    src: "fingerprint-example.rc",
-    installable: false,
-}
-
-prebuilt_etc {
-    name: "fingerprint-example.xml",
-    src: "fingerprint-example.xml",
-    sub_dir: "vintf",
-    installable: false,
-}
-
 apex {
     name: "com.android.hardware.biometrics.fingerprint.virtual",
     manifest: "apex_manifest.json",
@@ -76,10 +63,6 @@ apex {
     binaries: [
         "android.hardware.biometrics.fingerprint-service.example",
     ],
-    prebuilts: [
-        // init_rc
-        "fingerprint-example.rc",
-        // vintf_fragment
-        "fingerprint-example.xml",
-    ],
+    init_rc: [ "fingerprint-example.rc" ],
+    vintf_fragments: [ "fingerprint-example.xml" ],
 }
