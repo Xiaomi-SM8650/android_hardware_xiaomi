@@ -1,4 +1,4 @@
-service vendor.fingerprint-xiaomi /apex/com.android.hardware.biometrics.fingerprint.xiaomi/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+service vendor.fingerprint-xiaomi /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
     interface aidl android.hardware.biometrics.fingerprint.IFingerprint/default
     class late_start
     user system
