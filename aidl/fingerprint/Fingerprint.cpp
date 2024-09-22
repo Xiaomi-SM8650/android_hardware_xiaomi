@@ -45,23 +45,11 @@ constexpr char SW_VERSION[] = "vendor/version/revision";
 static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 1);
 static Fingerprint* sInstance;
 
-Fingerprint::Fingerprint() : mWorker(MAX_WORKER_QUEUE_SIZE) {
-    std::string sensorTypeProp = Fingerprint::cfg().get<std::string>("type");
-    if (sensorTypeProp == "" || sensorTypeProp == "default" || sensorTypeProp == "rear") {
-        mSensorType = FingerprintSensorType::REAR;
-        mEngine = std::make_unique<FingerprintEngineRear>();
-    } else if (sensorTypeProp == "udfps") {
-        mSensorType = FingerprintSensorType::UNDER_DISPLAY_OPTICAL;
-        mEngine = std::make_unique<FingerprintEngineUdfps>();
-    } else if (sensorTypeProp == "side") {
-        mSensorType = FingerprintSensorType::POWER_BUTTON;
-        mEngine = std::make_unique<FingerprintEngineSide>();
-    } else {
-        mSensorType = FingerprintSensorType::UNKNOWN;
-        mEngine = std::make_unique<FingerprintEngineRear>();
-        UNIMPLEMENTED(FATAL) << "unrecognized or unimplemented fingerprint behavior: "
-                             << sensorTypeProp;
-    }
+Fingerprint::Fingerprint() :
+        mDevice(nullptr),
+        mUdfpsHandlerFactory(nullptr),
+        mUdfpsHandler(nullptr),
+        mWorker(MAX_WORKER_QUEUE_SIZE) {
     sInstance = this;
     std::string sensorDriver = Fingerprint::cfg().get<std::string>("sensor_driver");
     if (sensorDriver == "") {
@@ -72,6 +60,29 @@ Fingerprint::Fingerprint() : mWorker(MAX_WORKER_QUEUE_SIZE) {
         LOG(ERROR) << "Can't open HAL module:" << sensorDriver;
     } else {
         LOG(INFO) << "Opened fingerprint HAL:" << sensorDriver;
+    }
+    std::string sensorTypeProp = Fingerprint::cfg().get<std::string>("type");
+    if (sensorTypeProp == "" || sensorTypeProp == "default" || sensorTypeProp == "rear") {
+        mSensorType = FingerprintSensorType::REAR;
+        mEngine = std::make_unique<FingerprintEngineRear>();
+    } else if (sensorTypeProp == "udfps") {
+        mSensorType = FingerprintSensorType::UNDER_DISPLAY_OPTICAL;
+        mEngine = std::make_unique<FingerprintEngineUdfps>();
+        LOG(INFO) << "UNDER_DISPLAY_OPTICAL selected";
+        mUdfpsHandler = mUdfpsHandlerFactory->create();
+        if (!mUdfpsHandler) {
+            LOG(ERROR) << "Can't create UdfpsHandler";
+        } else {
+            mUdfpsHandler->init(mDevice);
+        }
+    } else if (sensorTypeProp == "side") {
+        mSensorType = FingerprintSensorType::POWER_BUTTON;
+        mEngine = std::make_unique<FingerprintEngineSide>();
+    } else {
+        mSensorType = FingerprintSensorType::UNKNOWN;
+        mEngine = std::make_unique<FingerprintEngineRear>();
+        UNIMPLEMENTED(FATAL) << "unrecognized or unimplemented fingerprint behavior: "
+                             << sensorTypeProp;
     }
     LOG(INFO) << "sensorTypeProp:" << sensorTypeProp;
     LOG(INFO) << "ro.product.name=" << ::android::base::GetProperty("ro.product.name", "UNKNOWN");

@@ -19,6 +19,7 @@
 #include <aidl/android/hardware/biometrics/fingerprint/BnFingerprint.h>
 
 #include "fingerprint.h"
+#include "UdfpsHandler.h"
 
 #include "FingerprintEngine.h"
 #include "FingerprintEngineRear.h"
@@ -67,6 +68,8 @@ class Fingerprint : public BnFingerprint {
     FingerprintSensorType mSensorType;
 
     fingerprint_device_t* mDevice;
+    UdfpsHandlerFactory* mUdfpsHandlerFactory;
+    UdfpsHandler* mUdfpsHandler;
 };
 
 }  // namespace aidl::android::hardware::biometrics::fingerprint
