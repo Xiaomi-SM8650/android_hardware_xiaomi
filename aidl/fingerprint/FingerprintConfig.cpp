@@ -41,6 +41,7 @@ CREATE_GETTER_SETTER_WRAPPER(enrollment_hit, OptInt32)
 CREATE_GETTER_SETTER_WRAPPER(next_enrollment, OptString)
 CREATE_GETTER_SETTER_WRAPPER(authenticator_id, OptInt64)
 CREATE_GETTER_SETTER_WRAPPER(challenge, OptInt64)
+CREATE_GETTER_SETTER_WRAPPER(sensor_driver, OptString)
 CREATE_GETTER_SETTER_WRAPPER(sensor_id, OptInt32)
 CREATE_GETTER_SETTER_WRAPPER(sensor_location, OptString)
 CREATE_GETTER_SETTER_WRAPPER(sensor_strength, OptInt32)
@@ -75,6 +76,7 @@ static Config::Data configData[] = {
         {NGS(next_enrollment), &Config::parseString, ""},
         {NGS(authenticator_id), &Config::parseInt64, "0"},
         {NGS(challenge), &Config::parseInt64, ""},
+        {NGS(sensor_driver), &Config::parseString, "goodix"}
         {NGS(sensor_id), &Config::parseInt32, "0"},
         {NGS(sensor_location), &Config::parseString, ""},
         {NGS(sensor_strength), &Config::parseInt32, "2"},  // STRONG
