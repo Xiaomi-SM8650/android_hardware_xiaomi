@@ -18,6 +18,8 @@
 
 #include <aidl/android/hardware/biometrics/fingerprint/BnFingerprint.h>
 
+#include "fingerprint.h"
+
 #include "FingerprintEngine.h"
 #include "FingerprintEngineRear.h"
 #include "FingerprintEngineSide.h"
