@@ -75,7 +75,7 @@ static Config::Data configData[] = {
         {NGS(next_enrollment), &Config::parseString, ""},
         {NGS(authenticator_id), &Config::parseInt64, "0"},
         {NGS(challenge), &Config::parseInt64, ""},
-        {NGS(sensor_id), &Config::parseInt32, "5"},
+        {NGS(sensor_id), &Config::parseInt32, "0"},
         {NGS(sensor_location), &Config::parseString, ""},
         {NGS(sensor_strength), &Config::parseInt32, "2"},  // STRONG
         {NGS(operation_authenticate_fails), &Config::parseBool, "false"},

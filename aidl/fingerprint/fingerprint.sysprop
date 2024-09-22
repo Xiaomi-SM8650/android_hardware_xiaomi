@@ -189,7 +189,7 @@ prop {
     api_name: "operation_detect_interaction_acquired"
 }
 
-# sensor id (default: 5)
+# sensor id (default: 0)
 prop {
     prop_name: "persist.vendor.fingerprint.sensor_id"
     type: Integer

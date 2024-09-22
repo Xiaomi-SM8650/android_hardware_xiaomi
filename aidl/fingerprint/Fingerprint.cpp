@@ -29,7 +29,7 @@ using namespace ::android::fingerprint::xiaomi;
 namespace aidl::android::hardware::biometrics::fingerprint {
 namespace {
 constexpr size_t MAX_WORKER_QUEUE_SIZE = 5;
-constexpr int SENSOR_ID = 5;
+constexpr int SENSOR_ID = 0;
 constexpr common::SensorStrength SENSOR_STRENGTH = common::SensorStrength::STRONG;
 constexpr int MAX_ENROLLMENTS_PER_USER = 5;
 constexpr bool SUPPORTS_NAVIGATION_GESTURES = true;
