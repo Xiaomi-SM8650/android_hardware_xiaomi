@@ -35,7 +35,7 @@ int main() {
 
     if (hal->connected()) {
         CHECK(STATUS_OK == AIBinder_setExtension(binder.get(), binder_ext.get()));
-        const std::string instance = std::string(Fingerprint::descriptor) + "/virtual";
+        const std::string instance = std::string(Fingerprint::descriptor) + "/default";
         binder_status_t status =
                 AServiceManager_registerLazyService(binder.get(), instance.c_str());
         CHECK_EQ(status, STATUS_OK);

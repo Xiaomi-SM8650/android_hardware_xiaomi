@@ -2,6 +2,6 @@ service vendor.fingerprint-xiaomi /vendor/bin/hw/android.hardware.biometrics.fin
     class hal
     user nobody
     group nobody
-    interface aidl android.hardware.biometrics.fingerprint.IFingerprint/virtual
+    interface aidl android.hardware.biometrics.fingerprint.IFingerprint/default
     oneshot
     disabled

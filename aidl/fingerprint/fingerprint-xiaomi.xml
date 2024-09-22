@@ -2,6 +2,6 @@
     <hal format="aidl">
         <name>android.hardware.biometrics.fingerprint</name>
         <version>5</version>
-        <fqname>IFingerprint/virtual</fqname>
+        <fqname>IFingerprint/default</fqname>
     </hal>
 </manifest>
