@@ -59,6 +59,7 @@ class Fingerprint : public BnFingerprint {
 
   private:
     static fingerprint_device_t* openHal(const char* class_name);
+    static void notify(const fingerprint_msg_t* msg);
     void onHelp(int);
     void onSimFingerDown();
     void clearConfigSysprop();

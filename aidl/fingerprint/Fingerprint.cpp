@@ -166,6 +166,15 @@ Fingerprint::~Fingerprint() {
     mDevice = nullptr;
 }
 
+void Fingerprint::notify(const fingerprint_msg_t* msg) {
+    Fingerprint* thisPtr = sInstance;
+    if (thisPtr == nullptr || thisPtr->mSession == nullptr || thisPtr->mSession->isClosed()) {
+        ALOGE("Receiving callbacks before a session is opened.");
+        return;
+    }
+    thisPtr->mSession->notify(msg);
+}
+
 ndk::ScopedAStatus Fingerprint::createSession(int32_t sensorId, int32_t userId,
                                               const std::shared_ptr<ISessionCallback>& cb,
                                               std::shared_ptr<ISession>* out) {
