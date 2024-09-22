@@ -42,7 +42,6 @@ constexpr char SW_VERSION[] = "vendor/version/revision";
 
 }  // namespace
 
-static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 1);
 static Fingerprint* sInstance;
 
 Fingerprint::Fingerprint() :
