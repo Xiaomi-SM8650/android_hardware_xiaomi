@@ -54,6 +54,7 @@ class Fingerprint : public BnFingerprint {
     static const char* type2String(FingerprintSensorType type);
 
   private:
+    static fingerprint_device_t* openHal(const char* class_name);
     void onHelp(int);
     void onSimFingerDown();
     void clearConfigSysprop();
@@ -62,6 +63,8 @@ class Fingerprint : public BnFingerprint {
     WorkerThread mWorker;
     std::shared_ptr<Session> mSession;
     FingerprintSensorType mSensorType;
+
+    fingerprint_device_t* mDevice;
 };
 
 }  // namespace aidl::android::hardware::biometrics::fingerprint

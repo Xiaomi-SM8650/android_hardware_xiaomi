@@ -42,6 +42,9 @@ constexpr char SW_VERSION[] = "vendor/version/revision";
 
 }  // namespace
 
+static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 1);
+static Fingerprint* sInstance;
+
 Fingerprint::Fingerprint() : mWorker(MAX_WORKER_QUEUE_SIZE) {
     std::string sensorTypeProp = Fingerprint::cfg().get<std::string>("type");
     if (sensorTypeProp == "" || sensorTypeProp == "default" || sensorTypeProp == "rear") {
@@ -58,6 +61,17 @@ Fingerprint::Fingerprint() : mWorker(MAX_WORKER_QUEUE_SIZE) {
         mEngine = std::make_unique<FingerprintEngineRear>();
         UNIMPLEMENTED(FATAL) << "unrecognized or unimplemented fingerprint behavior: "
                              << sensorTypeProp;
+    }
+    sInstance = this;
+    std::string sensorDriver = Fingerprint::cfg().get<std::string>("sensor_driver");
+    if (sensorDriver == "") {
+        sensorDriver = "goodix";
+    }
+    mDevice = openHal(sensorDriver);
+    if (!mDevice) {
+        LOG(ERROR) << "Can't open HAL module:" << sensorDriver;
+    } else {
+        LOG(INFO) << "Opened fingerprint HAL:" << sensorDriver;
     }
     LOG(INFO) << "sensorTypeProp:" << sensorTypeProp;
     LOG(INFO) << "ro.product.name=" << ::android::base::GetProperty("ro.product.name", "UNKNOWN");
@@ -93,6 +107,35 @@ ndk::ScopedAStatus Fingerprint::getSensorProps(std::vector<SensorProps>* out) {
              controlIllumination,
              std::nullopt}};
     return ndk::ScopedAStatus::ok();
+}
+
+fingerprint_device_t* Fingerprint::openHal(const char* sensor_driver) {
+    const hw_module_t* hw_mdl = nullptr;
+    ALOGD("Opening fingerprint hal library...");
+    if (hw_get_module_by_class(FINGERPRINT_HARDWARE_MODULE_ID, sensor_driver, &hw_mdl) != 0) {
+        ALOGE("Can't open fingerprint HW Module");
+        return nullptr;
+    }
+    if (!hw_mdl) {
+        ALOGE("No valid fingerprint module");
+        return nullptr;
+    }
+    auto module = reinterpret_cast<const fingerprint_module_t*>(hw_mdl);
+    if (!module->common.methods->open) {
+        ALOGE("No valid open method");
+        return nullptr;
+    }
+    hw_device_t* device = nullptr;
+    if (module->common.methods->open(hw_mdl, nullptr, &device) != 0) {
+        ALOGE("Can't open fingerprint methods");
+        return nullptr;
+    }
+    auto fp_device = reinterpret_cast<fingerprint_device_t*>(device);
+    if (fp_device->set_notify(fp_device, Fingerprint::notify) != 0) {
+        ALOGE("Can't register fingerprint module callback");
+        return nullptr;
+    }
+    return fp_device;
 }
 
 ndk::ScopedAStatus Fingerprint::createSession(int32_t sensorId, int32_t userId,
