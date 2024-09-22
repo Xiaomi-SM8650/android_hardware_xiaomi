@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-#pragma once
-#include "FakeFingerprintEngine.h"
+#include "FingerprintEngineSide.h"
 
-using namespace ::aidl::android::hardware::biometrics::common;
+#include <android-base/logging.h>
+
+#include <fingerprint.sysprop.h>
+
+#include "util/CancellationSignal.h"
+#include "util/Util.h"
+
+using namespace ::android::fingerprint::virt;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 
-// A fake engine that is backed by system properties instead of hardware.
-class FakeFingerprintEngineSide : public FakeFingerprintEngine {
-  public:
-    static constexpr int32_t defaultSensorLocationX = 0;
-    static constexpr int32_t defaultSensorLocationY = 600;
-    static constexpr int32_t defaultSensorRadius = 150;
+FingerprintEngineSide::FingerprintEngineSide() : FingerprintEngine() {}
 
-    FakeFingerprintEngineSide();
-    ~FakeFingerprintEngineSide() {}
-
-    virtual SensorLocation defaultSensorLocation() override;
-};
-
+SensorLocation FingerprintEngineSide::defaultSensorLocation() {
+    return SensorLocation{.sensorLocationX = defaultSensorLocationX,
+                          .sensorLocationY = defaultSensorLocationY,
+                          .sensorRadius = defaultSensorRadius};
+}
 }  // namespace aidl::android::hardware::biometrics::fingerprint

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "FakeLockoutTracker.h"
+#include "LockoutTracker.h"
 #include <fingerprint.sysprop.h>
 #include "Fingerprint.h"
 #include "util/Util.h"
@@ -23,13 +23,13 @@ using namespace ::android::fingerprint::virt;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 
-void FakeLockoutTracker::reset() {
+void LockoutTracker::reset() {
     mFailedCount = 0;
     mLockoutTimedStart = 0;
     mCurrentMode = LockoutMode::kNone;
 }
 
-void FakeLockoutTracker::addFailedAttempt() {
+void LockoutTracker::addFailedAttempt() {
     bool enabled = Fingerprint::cfg().get<bool>("lockout_enable");
     if (enabled) {
         mFailedCount++;
@@ -51,7 +51,7 @@ void FakeLockoutTracker::addFailedAttempt() {
     }
 }
 
-FakeLockoutTracker::LockoutMode FakeLockoutTracker::getMode() {
+LockoutTracker::LockoutMode LockoutTracker::getMode() {
     if (mCurrentMode == LockoutMode::kTimed) {
         int32_t lockoutTimedDuration =
                 Fingerprint::cfg().get<std::int32_t>("lockout_timed_duration");
@@ -64,7 +64,7 @@ FakeLockoutTracker::LockoutMode FakeLockoutTracker::getMode() {
     return mCurrentMode;
 }
 
-int64_t FakeLockoutTracker::getLockoutTimeLeft() {
+int64_t LockoutTracker::getLockoutTimeLeft() {
     int64_t res = 0;
 
     if (mLockoutTimedStart > 0) {

@@ -15,17 +15,17 @@
  */
 
 #pragma once
-#include "FakeFingerprintEngine.h"
+#include "FingerprintEngine.h"
 
 using namespace ::aidl::android::hardware::biometrics::common;
 
 namespace aidl::android::hardware::biometrics::fingerprint {
 
-// A fake engine that is backed by system properties instead of hardware.
-class FakeFingerprintEngineRear : public FakeFingerprintEngine {
+// An engine that is backed by system properties instead of hardware.
+class FingerprintEngineRear : public FingerprintEngine {
   public:
-    FakeFingerprintEngineRear() : FakeFingerprintEngine() {}
-    ~FakeFingerprintEngineRear() {}
+    FingerprintEngineRear() : FingerprintEngine() {}
+    ~FingerprintEngineRear() {}
 };
 
 }  // namespace aidl::android::hardware::biometrics::fingerprint

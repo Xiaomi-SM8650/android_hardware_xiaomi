@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include "FakeFingerprintEngineSide.h"
+#include "FingerprintEngineRear.h"
 
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 
 #include <fingerprint.sysprop.h>
 
@@ -25,13 +26,4 @@
 
 using namespace ::android::fingerprint::virt;
 
-namespace aidl::android::hardware::biometrics::fingerprint {
-
-FakeFingerprintEngineSide::FakeFingerprintEngineSide() : FakeFingerprintEngine() {}
-
-SensorLocation FakeFingerprintEngineSide::defaultSensorLocation() {
-    return SensorLocation{.sensorLocationX = defaultSensorLocationX,
-                          .sensorLocationY = defaultSensorLocationY,
-                          .sensorRadius = defaultSensorRadius};
-}
-}  // namespace aidl::android::hardware::biometrics::fingerprint
+namespace aidl::android::hardware::biometrics::fingerprint {}

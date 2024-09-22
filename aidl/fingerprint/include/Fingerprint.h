@@ -18,10 +18,10 @@
 
 #include <aidl/android/hardware/biometrics/fingerprint/BnFingerprint.h>
 
-#include "FakeFingerprintEngine.h"
-#include "FakeFingerprintEngineRear.h"
-#include "FakeFingerprintEngineSide.h"
-#include "FakeFingerprintEngineUdfps.h"
+#include "FingerprintEngine.h"
+#include "FingerprintEngineRear.h"
+#include "FingerprintEngineSide.h"
+#include "FingerprintEngineUdfps.h"
 
 #include "FingerprintConfig.h"
 #include "Session.h"
@@ -58,7 +58,7 @@ class Fingerprint : public BnFingerprint {
     void onSimFingerDown();
     void clearConfigSysprop();
 
-    std::unique_ptr<FakeFingerprintEngine> mEngine;
+    std::unique_ptr<FingerprintEngine> mEngine;
     WorkerThread mWorker;
     std::shared_ptr<Session> mSession;
     FingerprintSensorType mSensorType;

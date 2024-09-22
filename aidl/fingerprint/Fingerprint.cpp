@@ -46,16 +46,16 @@ Fingerprint::Fingerprint() : mWorker(MAX_WORKER_QUEUE_SIZE) {
     std::string sensorTypeProp = Fingerprint::cfg().get<std::string>("type");
     if (sensorTypeProp == "" || sensorTypeProp == "default" || sensorTypeProp == "rear") {
         mSensorType = FingerprintSensorType::REAR;
-        mEngine = std::make_unique<FakeFingerprintEngineRear>();
+        mEngine = std::make_unique<FingerprintEngineRear>();
     } else if (sensorTypeProp == "udfps") {
         mSensorType = FingerprintSensorType::UNDER_DISPLAY_OPTICAL;
-        mEngine = std::make_unique<FakeFingerprintEngineUdfps>();
+        mEngine = std::make_unique<FingerprintEngineUdfps>();
     } else if (sensorTypeProp == "side") {
         mSensorType = FingerprintSensorType::POWER_BUTTON;
-        mEngine = std::make_unique<FakeFingerprintEngineSide>();
+        mEngine = std::make_unique<FingerprintEngineSide>();
     } else {
         mSensorType = FingerprintSensorType::UNKNOWN;
-        mEngine = std::make_unique<FakeFingerprintEngineRear>();
+        mEngine = std::make_unique<FingerprintEngineRear>();
         UNIMPLEMENTED(FATAL) << "unrecognized or unimplemented fingerprint behavior: "
                              << sensorTypeProp;
     }
