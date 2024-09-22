@@ -23,7 +23,6 @@ cc_binary {
         "Session.cpp",
         "FingerprintConfig.cpp",
         "UdfpsHandler.cpp",
-        "VirtualHal.cpp",
         "main.cpp",
     ],
     stl: "c++_static",

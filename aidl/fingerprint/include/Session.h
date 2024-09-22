@@ -15,6 +15,7 @@
  */
 
 #pragma once
+#define LOG_TAG "android.hardware.biometrics.fingerprint-service.xiaomi"
 
 #include <aidl/android/hardware/biometrics/fingerprint/BnSession.h>
 #include <aidl/android/hardware/biometrics/fingerprint/ISessionCallback.h>

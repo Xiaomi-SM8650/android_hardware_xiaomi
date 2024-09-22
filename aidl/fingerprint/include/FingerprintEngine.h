@@ -16,8 +16,6 @@
 
 #pragma once
 
-#define LOG_TAG "FingerprintVirtualHal"
-
 #include <aidl/android/hardware/biometrics/common/SensorStrength.h>
 #include <aidl/android/hardware/biometrics/fingerprint/ISessionCallback.h>
 #include <android/binder_to_string.h>
