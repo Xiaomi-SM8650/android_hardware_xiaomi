@@ -149,6 +149,23 @@ fingerprint_device_t* Fingerprint::openHal(const char* sensor_driver) {
     return fp_device;
 }
 
+Fingerprint::~Fingerprint() {
+    ALOGV("~Fingerprint()");
+    if (mUdfpsHandler) {
+        mUdfpsHandlerFactory->destroy(mUdfpsHandler);
+    }
+    if (mDevice == nullptr) {
+        ALOGE("No valid device");
+        return;
+    }
+    int err;
+    if (0 != (err = mDevice->common.close(reinterpret_cast<hw_device_t*>(mDevice)))) {
+        ALOGE("Can't close fingerprint module, error: %d", err);
+        return;
+    }
+    mDevice = nullptr;
+}
+
 ndk::ScopedAStatus Fingerprint::createSession(int32_t sensorId, int32_t userId,
                                               const std::shared_ptr<ISessionCallback>& cb,
                                               std::shared_ptr<ISession>* out) {

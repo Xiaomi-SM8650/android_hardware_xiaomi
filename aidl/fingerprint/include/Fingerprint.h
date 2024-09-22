@@ -35,6 +35,7 @@ namespace aidl::android::hardware::biometrics::fingerprint {
 class Fingerprint : public BnFingerprint {
   public:
     Fingerprint();
+    ~Fingerprint();
 
     ndk::ScopedAStatus getSensorProps(std::vector<SensorProps>* out) override;
 
