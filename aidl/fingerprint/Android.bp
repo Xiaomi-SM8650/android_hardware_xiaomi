@@ -40,11 +40,6 @@ cc_binary {
         "android.hardware.biometrics.common.config",
         "android.hardware.keymaster-V4-ndk",
     ],
-    product_variables: {
-        debuggable: {
-            cflags: ["-DFPS_DEBUGGABLE"],
-        },
-    },
     init_rc: [ "fingerprint-xiaomi.rc" ],
     vintf_fragments: [ "fingerprint-xiaomi.xml" ],
 }
