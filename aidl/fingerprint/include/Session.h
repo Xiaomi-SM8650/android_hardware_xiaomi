@@ -22,6 +22,9 @@
 #include "FingerprintEngine.h"
 #include "thread/WorkerThread.h"
 
+#include "LockoutTracker.h"
+#include "UdfpsHandler.h"
+
 namespace aidl::android::hardware::biometrics::fingerprint {
 
 namespace common = aidl::android::hardware::biometrics::common;
@@ -46,7 +49,8 @@ void onClientDeath(void* cookie);
 
 class Session : public BnSession {
   public:
-    Session(int sensorId, int userId, std::shared_ptr<ISessionCallback> cb,
+    Session(fingerprint_device_t* device, UdfpsHandler* udfpsHandler, 
+            int sensorId, int userId, std::shared_ptr<ISessionCallback> cb,
             FingerprintEngine* engine, WorkerThread* worker);
 
     ndk::ScopedAStatus generateChallenge() override;
@@ -107,7 +111,25 @@ class Session : public BnSession {
 
     bool isClosed();
 
+    void notify(const fingerprint_msg_t* msg);
+
   private:
+    fingerprint_device_t* mDevice;
+    LockoutTracker mLockoutTracker;
+
+    bool checkSensorLockout();
+    void clearLockout(bool clearAttemptCounter);
+    void startLockoutTimer(int64_t timeout);
+    void lockoutTimerExpired();
+
+    // lockout timer
+    bool mIsLockoutTimerStarted = false;
+    bool mIsLockoutTimerAborted = false;
+
+    //static ndk::ScopedAStatus ErrorFilter(int32_t error);
+    static Error VendorErrorFilter(int32_t error, int32_t* vendorCode);
+    static AcquiredInfo VendorAcquiredFilter(int32_t info, int32_t* vendorCode);
+
     // Crashes the HAL if it's not currently idling because that would be an invalid state machine
     // transition. Otherwise, sets the scheduled state to the given state.
     void scheduleStateOrCrash(SessionState state);
@@ -146,6 +168,8 @@ class Session : public BnSession {
 
     // Binder death handler.
     AIBinder_DeathRecipient* mDeathRecipient;
+
+    UdfpsHandler* mUdfpsHandler;
 };
 
 }  // namespace aidl::android::hardware::biometrics::fingerprint
