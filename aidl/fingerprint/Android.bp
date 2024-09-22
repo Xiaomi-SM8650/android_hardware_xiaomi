@@ -9,7 +9,7 @@ package {
 }
 
 cc_binary {
-    name: "android.hardware.biometrics.fingerprint-service.example",
+    name: "android.hardware.biometrics.fingerprint-service.xiaomi",
     vendor: true,
     relative_install_path: "hw",
     local_include_dirs: ["include"],
